@@ -1,3 +1,5 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Lub4ikChe_Diploma-Backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Lub4ikChe_Diploma-Backend)
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>
