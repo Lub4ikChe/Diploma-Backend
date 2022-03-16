@@ -60,6 +60,22 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+### Starting database
+
+- To start the database, simply run
+
+```bash
+npm run start:db
+or
+docker-compose up db
+```
+
+- To create the database, run:
+
+```bash
+docker exec -ti backend_db_1 sh -c "psql -c 'CREATE DATABASE avallone;'"
+```
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
