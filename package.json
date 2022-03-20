@@ -21,15 +21,29 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "pgadmin": "docker-compose exec pgadmin echo 'pgadmin already running' || docker-compose up pgadmin"
+    "pgadmin": "docker-compose exec pgadmin echo 'pgadmin already running' || docker-compose up pgadmin",
+    "typeorm": "node -r tsconfig-paths/register --require ts-node/register ./node_modules/typeorm/cli.js --config src/config/typeorm.config.ts",
+    "migration:generate": "npm run typeorm -- migration:generate",
+    "migration:create": "npm run typeorm -- migration:create",
+    "migration:apply": "npm run typeorm -- migration:run",
+    "migration:revert": "npm run typeorm -- migration:revert",
+    "migration:show": "npm run typeorm -- migration:show",
+    "migration:update-timestamp": "ts-node utils/updateMigrationTimestamp",
+    "seed:create": "npm run typeorm -- migration:create -d 'src/database/seed'",
+    "schema:log": "npm run typeorm -- schema:log",
+    "schema:drop": "npm run typeorm -- schema:drop"
   },
   "dependencies": {
     "@nestjs/common": "^7.5.1",
+    "@nestjs/config": "^2.0.0",
     "@nestjs/core": "^7.5.1",
     "@nestjs/platform-express": "^7.5.1",
+    "@nestjs/typeorm": "^7.1.5",
+    "pg": "^8.7.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^6.6.3"
+    "rxjs": "^6.6.3",
+    "typeorm": "^0.2.5"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.2.1",
@@ -55,7 +69,8 @@
     "ts-loader": "^8.0.8",
     "ts-node": "^9.0.0",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^4.0.5"
+    "typescript": "^4.0.5",
+    "yargs": "^17.4.0"
   },
   "jest": {
     "moduleFileExtensions": [
