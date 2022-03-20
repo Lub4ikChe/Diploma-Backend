@@ -73,7 +73,7 @@ docker-compose up db
 - To create the database, run:
 
 ```bash
-docker exec -ti backend_db_1 sh -c "psql -c 'CREATE DATABASE avallone;'"
+docker exec -ti backend_db_1 sh -c "psql -c 'CREATE DATABASE health_platform;'"
 ```
 
 ## Support
