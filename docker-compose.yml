@@ -9,7 +9,7 @@ services:
       - 5432:5432
     environment:
       - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=health_platform
+      - POSTGRES_DB=music_platform
       - POSTGRES_USER=postgres
       - PGUSER=postgres
     networks: 
