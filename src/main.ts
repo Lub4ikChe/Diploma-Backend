@@ -1,6 +1,8 @@
 import { BadRequestException, Logger, ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+
+import { AtGuard } from 'src/auth/guards/at-guard.guard';
 
 import helmet from 'helmet';
 import * as cookieParser from 'cookie-parser';
@@ -30,6 +32,8 @@ async function bootstrap() {
       },
     }),
   );
+
+  app.useGlobalGuards(new AtGuard(new Reflector()));
 
   await app.listen(PORT);
   logger.log(`Application listening on port ${PORT}`);

@@ -63,13 +63,6 @@ export class UserService {
     return user;
   }
 
-  async getUserRefreshToken(email: string): Promise<User> {
-    return this.userRepository.findOne(
-      { email },
-      { select: ['id', 'email', 'refreshToken'] },
-    );
-  }
-
   async removeUserWithRelations(user: User) {
     return this.userRepository.remove(user);
   }

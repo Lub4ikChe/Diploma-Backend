@@ -70,12 +70,10 @@ export class AuthService {
   }
 
   async signOut(email: string) {
-    const userWithRefreshToke = await this.userService.getUserRefreshToken(
-      email,
-    );
+    const user = await this.userService.getUserByEmail(email);
 
     await this.authTokenService.updateRefreshTokenForUser(
-      userWithRefreshToke.refreshToken,
+      user.refreshToken,
       null,
     );
 
@@ -83,27 +81,25 @@ export class AuthService {
   }
 
   async refreshTokens(email: string, refreshToken: string): Promise<Tokens> {
-    const userWithRefreshToke = await this.userService.getUserRefreshToken(
-      email,
-    );
+    const user = await this.userService.getUserByEmail(email);
 
-    if (!userWithRefreshToke) {
+    if (!user) {
       throw new ForbiddenException('Access denied');
     }
 
     const refreshTokenMatches =
       await this.authTokenService.compareRefreshTokens(
         refreshToken,
-        userWithRefreshToke.refreshToken,
+        user.refreshToken,
       );
 
     if (!refreshTokenMatches) {
       throw new ForbiddenException('Access denied');
     }
 
-    const tokens = await this.getTokens(userWithRefreshToke);
+    const tokens = await this.getTokens(user);
     await this.authTokenService.updateRefreshTokenForUser(
-      userWithRefreshToke.refreshToken,
+      user.refreshToken,
       tokens.refreshToken,
     );
 

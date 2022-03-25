@@ -6,24 +6,30 @@ import {
   HttpStatus,
   Param,
   Post,
-  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { Response, Request } from 'express';
+import { Response } from 'express';
 
-import { AuthService } from './services/auth.service';
+import { AuthService } from 'src/auth/services/auth.service';
+
+import { RtGuard } from 'src/auth/guards/rt-guard.decorator';
+import { SkipAuth } from 'src/auth/decorators/skip-auth.decorator';
+
+import { GetJWTPayload } from 'src/auth/decorators/get-jwt-payload.decorator';
+import { GetCookieData } from 'src/auth/decorators/get-cookie-data.decorator';
 
 import { SignUpDto } from 'src/auth/dto/sign-up.dto';
 import { SignInDto } from 'src/auth/dto/sign-in.dto';
 
+import { JwtPayload } from 'src/auth/jwt/jwt-payload.interface';
 import { Tokens } from 'src/auth/jwt/tokens.interface';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @SkipAuth()
   @Post('/signup')
   @HttpCode(HttpStatus.CREATED)
   async signUp(
@@ -35,6 +41,15 @@ export class AuthController {
     return tokens;
   }
 
+  @Get('/activate/:inviteToken')
+  @HttpCode(HttpStatus.OK)
+  async activateUserAccount(
+    @Param('inviteToken') inviteToken: string,
+  ): Promise<void> {
+    return this.authService.activateUserAccount(inviteToken);
+  }
+
+  @SkipAuth()
   @Post('/signin')
   @HttpCode(HttpStatus.OK)
   async signIn(
@@ -46,40 +61,30 @@ export class AuthController {
     return tokens;
   }
 
-  @Post('/signout')
-  @UseGuards(AuthGuard('at-jwt'))
-  @HttpCode(HttpStatus.OK)
-  async signOut(
-    @Req() req: Request,
-    @Res({ passthrough: true })
-    response: Response,
-  ): Promise<void> {
-    const email = req.user['email'];
-    response.clearCookie('refresh-jwt');
-    return this.authService.signOut(email);
-  }
-
+  @SkipAuth()
   @Post('/refresh')
-  @UseGuards(AuthGuard('rt-jwt'))
+  @UseGuards(RtGuard)
   @HttpCode(HttpStatus.OK)
   async refreshTokens(
-    @Req() req: Request,
-    @Res({ passthrough: true })
-    response: Response,
+    @Res({ passthrough: true }) response: Response,
+    @GetJWTPayload() jwtPayload: JwtPayload,
+    @GetCookieData('refresh-jwt') refreshToken: string,
   ): Promise<Tokens> {
-    const email = req.user['email'];
-    const refreshToken = req.cookies['refresh-jwt'];
-    const tokens = await this.authService.refreshTokens(email, refreshToken);
+    const tokens = await this.authService.refreshTokens(
+      jwtPayload.email,
+      refreshToken,
+    );
     response.cookie('refresh-jwt', tokens.refreshToken);
     return tokens;
   }
 
-  @Get('/activate/:inviteToken')
-  @UseGuards(AuthGuard('at-jwt'))
+  @Post('/signout')
   @HttpCode(HttpStatus.OK)
-  async activateUserAccount(
-    @Param('inviteToken') inviteToken: string,
+  async signOut(
+    @Res({ passthrough: true }) response: Response,
+    @GetJWTPayload() jwtPayload: JwtPayload,
   ): Promise<void> {
-    return this.authService.activateUserAccount(inviteToken);
+    response.clearCookie('refresh-jwt');
+    return this.authService.signOut(jwtPayload.email);
   }
 }
