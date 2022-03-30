@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { AttachmentTypes } from 'src/attachment/enums/attachment-types.enum';
+import { AttachmentFolderTypes } from 'src/attachment/enums/attachment-folder-types.enum';
 
 import { UserInformation } from 'src/entities/user-information/user-information.entity';
 
@@ -23,6 +24,9 @@ export class Attachment extends BaseEntity {
   @Column()
   type: AttachmentTypes;
 
+  @Column({ name: 'folder_type' })
+  folderType: AttachmentFolderTypes;
+
   @Column({ name: 'original_name' })
   originalName: string;
 
@@ -31,6 +35,6 @@ export class Attachment extends BaseEntity {
 
   @AfterLoad()
   setSignedUrl() {
-    this.url = `${process.env.SERVER_URL}/photos/${this.name}`;
+    this.url = `${process.env.SERVER_URL}/${this.folderType}/${this.type}/${this.name}`;
   }
 }

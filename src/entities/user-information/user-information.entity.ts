@@ -9,7 +9,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { User } from 'src/entities/user/user.entity';
-import { Attachment } from 'src/entities/attachments/attachment.entity';
+import { Attachment } from 'src/entities/attachment/attachment.entity';
 
 @Entity()
 @Unique(['userId'])
