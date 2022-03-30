@@ -21,7 +21,13 @@ import { AppController } from 'src/app.controller';
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),
-    ServeStaticModule.forRoot({ rootPath: path.resolve(__dirname, 'static') }),
+    ServeStaticModule.forRootAsync({
+      useFactory: () => [
+        {
+          rootPath: path.resolve(__dirname, process.env.STATIC_FOLDER_NAME),
+        },
+      ],
+    }),
     MailerModule.forRootAsync({
       useFactory: () => ({
         transport: {
