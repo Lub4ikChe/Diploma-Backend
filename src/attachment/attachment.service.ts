@@ -103,7 +103,6 @@ export class AttachmentService {
 
   private createFileName(originalName: string) {
     const fileExtension = originalName.split('.').pop();
-    const fileName = `${uuid.v4()}.${fileExtension}`;
-    return fileName;
+    return `${uuid.v4()}.${fileExtension}`;
   }
 }
