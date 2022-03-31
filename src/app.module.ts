@@ -1,14 +1,17 @@
 import { Logger, Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import * as path from 'path';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmCliConfigAsync } from 'src/config/typeorm.config';
 import { Connection } from 'typeorm';
 
+import { ConfigModule } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { MailerModule } from '@nestjs-modules/mailer';
 
 import { AuthModule } from 'src/auth/auth.module';
 import { UserModule } from 'src/user/user.module';
+import { AttachmentModule } from 'src/attachment/attachment.module';
 
 import { AppService } from 'src/app.service';
 import { AppController } from 'src/app.controller';
@@ -17,6 +20,14 @@ import { AppController } from 'src/app.controller';
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
+    }),
+    ServeStaticModule.forRootAsync({
+      useFactory: () => [
+        {
+          rootPath: path.resolve(__dirname, process.env.STATIC_FOLDER_NAME),
+          exclude: ['*'],
+        },
+      ],
     }),
     MailerModule.forRootAsync({
       useFactory: () => ({
@@ -38,6 +49,7 @@ import { AppController } from 'src/app.controller';
     TypeOrmModule.forRootAsync(typeOrmCliConfigAsync),
     AuthModule,
     UserModule,
+    AttachmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

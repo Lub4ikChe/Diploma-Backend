@@ -1,4 +1,9 @@
-import { BadRequestException, Logger, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  ClassSerializerInterceptor,
+  Logger,
+  ValidationPipe,
+} from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
@@ -32,6 +37,9 @@ async function bootstrap() {
       },
     }),
   );
+
+  // handling responses
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   app.useGlobalGuards(new AtGuard(new Reflector()));
 
