@@ -25,6 +25,7 @@ import { AppController } from 'src/app.controller';
       useFactory: () => [
         {
           rootPath: path.resolve(__dirname, process.env.STATIC_FOLDER_NAME),
+          exclude: ['*'],
         },
       ],
     }),

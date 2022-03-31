@@ -3,12 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { UserInformation } from 'src/entities/user-information/user-information.entity';
-import { Attachment } from 'src/entities/attachment/attachment.entity';
 
 import { AttachmentService } from 'src/attachment/attachment.service';
 
 import { AttachmentTypes } from 'src/attachment/enums/attachment-types.enum';
 import { AttachmentFolderTypes } from 'src/attachment/enums/attachment-folder-types.enum';
+
+import { AttachmentDto } from 'src/attachment/dto/attachment.dto';
 
 @Injectable()
 export class UserPhotoService {
@@ -21,7 +22,7 @@ export class UserPhotoService {
   async createUserPhoto(
     userId: string,
     file: Express.Multer.File,
-  ): Promise<Attachment> {
+  ): Promise<AttachmentDto> {
     const userInfo = await this.findUserInfo(userId);
     if (userInfo.photo) {
       throw new ConflictException('Photo already exists');
@@ -33,22 +34,26 @@ export class UserPhotoService {
     );
     userInfo.photo = attachment;
     await this.userInformationRepository.save(userInfo);
-    return attachment;
+    return new AttachmentDto(attachment);
   }
 
   async updateUserPhoto(
     userId: string,
     file: Express.Multer.File,
-  ): Promise<Attachment> {
+  ): Promise<AttachmentDto> {
     const userInfo = await this.findUserInfo(userId);
     if (!userInfo.photo) {
       return this.createUserPhoto(userId, file);
     }
 
-    return this.attachmentService.updateFile(userInfo.photo.id, file);
+    const attachment = await this.attachmentService.updateFile(
+      userInfo.photo.id,
+      file,
+    );
+    return new AttachmentDto(attachment);
   }
 
-  async removeUserPhoto(userId: string): Promise<Attachment> {
+  async removeUserPhoto(userId: string): Promise<AttachmentDto> {
     const userInfo = await this.findUserInfo(userId);
     if (!userInfo.photo) {
       return;
@@ -56,7 +61,9 @@ export class UserPhotoService {
     const attachmentId = userInfo.photo.id;
     userInfo.photo = null;
     await this.userInformationRepository.save(userInfo);
-    return this.attachmentService.removeFile(attachmentId);
+
+    const attachment = await this.attachmentService.removeFile(attachmentId);
+    return new AttachmentDto(attachment);
   }
 
   private async findUserInfo(userId: string): Promise<UserInformation> {

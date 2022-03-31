@@ -1,7 +1,8 @@
-import { Exclude, Expose } from 'class-transformer';
-import { BaseDto } from 'src/utils/base.dto';
+import { Exclude, Expose, Transform } from 'class-transformer';
 
-import { Attachment } from 'src/entities/attachment/attachment.entity';
+import { BaseDto } from 'src/utils/base.dto';
+import { AttachmentDto } from 'src/attachment/dto/attachment.dto';
+
 import { UserInformation } from 'src/entities/user-information/user-information.entity';
 
 @Exclude()
@@ -19,5 +20,6 @@ export class UserInformationDto extends BaseDto<UserInformation> {
   name: string;
 
   @Expose()
-  photo: Attachment;
+  @Transform(prop => prop.value && new AttachmentDto(prop.value))
+  photo: AttachmentDto;
 }

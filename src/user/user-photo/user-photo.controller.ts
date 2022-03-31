@@ -10,10 +10,12 @@ import {
   Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+
 import { UserPhotoService } from 'src/user/user-photo/user-photo.service';
 import { GetJWTPayload } from 'src/auth/decorators/get-jwt-payload.decorator';
+
 import { JwtPayload } from 'src/auth/jwt/jwt-payload.interface';
-import { Attachment } from 'src/entities/attachment/attachment.entity';
+import { AttachmentDto } from 'src/attachment/dto/attachment.dto';
 
 @Controller('user/photo')
 export class UserPhotoController {
@@ -25,7 +27,7 @@ export class UserPhotoController {
   async createUserPhoto(
     @GetJWTPayload() jwtPayload: JwtPayload,
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<Attachment> {
+  ): Promise<AttachmentDto> {
     if (!file) {
       throw new BadRequestException('Photo not uploaded');
     }
@@ -39,7 +41,7 @@ export class UserPhotoController {
   async updateUserPhoto(
     @GetJWTPayload() jwtPayload: JwtPayload,
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<Attachment> {
+  ): Promise<AttachmentDto> {
     if (!file) {
       throw new BadRequestException('Photo not uploaded');
     }
@@ -51,7 +53,7 @@ export class UserPhotoController {
   @HttpCode(HttpStatus.OK)
   async removeUserPhoto(
     @GetJWTPayload() jwtPayload: JwtPayload,
-  ): Promise<Attachment> {
+  ): Promise<AttachmentDto> {
     return this.userPhotoService.removeUserPhoto(jwtPayload.userId);
   }
 }
