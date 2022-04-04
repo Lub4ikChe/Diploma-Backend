@@ -10,6 +10,7 @@ import { AttachmentTypes } from 'src/attachment/enums/attachment-types.enum';
 import { AttachmentFolderTypes } from 'src/attachment/enums/attachment-folder-types.enum';
 
 import { UserInformation } from 'src/entities/user-information/user-information.entity';
+import { Track } from 'src/entities/track/track.entity';
 
 @Entity()
 export class Attachment extends BaseEntity {
@@ -32,6 +33,12 @@ export class Attachment extends BaseEntity {
 
   @OneToOne(() => UserInformation, userInformation => userInformation.photo)
   userInformation: UserInformation;
+
+  @OneToOne(() => Track, track => track.audio)
+  trackAudio: Track;
+
+  @OneToOne(() => Track, track => track.image)
+  trackImage: Track;
 
   @AfterLoad()
   setSignedUrl() {

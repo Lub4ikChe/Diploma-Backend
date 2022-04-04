@@ -3,6 +3,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   Unique,
@@ -12,6 +13,8 @@ import { UserStatus } from 'src/user/enums/user-status.enum';
 import { UserInvite } from 'src/entities/user/user-invite.entity';
 import { RefreshToken } from 'src/entities/refresh-token/refresh-token.entity';
 import { UserInformation } from 'src/entities/user-information/user-information.entity';
+import { Track } from 'src/entities/track/track.entity';
+import { Comment } from 'src/entities/comment/comment.entity';
 
 @Unique(['email'])
 @Entity()
@@ -48,4 +51,10 @@ export class User extends BaseEntity {
   })
   @JoinColumn([{ name: 'user_information_id', referencedColumnName: 'id' }])
   information: UserInformation;
+
+  @OneToMany(() => Track, track => track.uploadedBy)
+  uploadedTracks: Track[];
+
+  @OneToMany(() => Comment, comment => comment.author, { eager: false })
+  comments: Comment[];
 }
