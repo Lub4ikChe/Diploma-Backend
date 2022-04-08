@@ -12,6 +12,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { AuthModule } from 'src/auth/auth.module';
 import { UserModule } from 'src/user/user.module';
 import { AttachmentModule } from 'src/attachment/attachment.module';
+import { TrackModule } from 'src/track/track.module';
+import { CommentModule } from 'src/comment/comment.module';
 
 import { AppService } from 'src/app.service';
 import { AppController } from 'src/app.controller';
@@ -50,6 +52,8 @@ import { AppController } from 'src/app.controller';
     AuthModule,
     UserModule,
     AttachmentModule,
+    TrackModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
