@@ -32,7 +32,7 @@ export class UserService {
   async getUserByEmail(email: string): Promise<User | null> {
     return this.userRepository.findOne(
       { email },
-      { select: ['id', 'email', 'status'] },
+      { select: ['id', 'email', 'status'], relations: ['information'] },
     );
   }
 

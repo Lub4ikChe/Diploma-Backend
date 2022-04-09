@@ -6,6 +6,7 @@ import {
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { UserRepository } from 'src/user/repositories/user.repository';
 import { UserInformation } from 'src/entities/user-information/user-information.entity';
 
 import { CreateUserInformationDto } from 'src/user/user-information/dto/create-user-information.dto';
@@ -17,6 +18,8 @@ export class UserInformationService {
   constructor(
     @InjectRepository(UserInformation)
     private userInformationRepository: Repository<UserInformation>,
+    @InjectRepository(UserRepository)
+    private userRepository: UserRepository,
   ) {}
 
   async getUserInfo(userId: string): Promise<UserInformationDto> {
@@ -49,8 +52,12 @@ export class UserInformationService {
     userInfo.userId = userId;
     userInfo.firstName = firstName;
     userInfo.lastName = lastName;
+    await this.userInformationRepository.save(userInfo);
 
-    await userInfo.save();
+    const user = await this.userRepository.findOneOrFail({ id: userId });
+    user.information = userInfo;
+    await this.userRepository.save(user);
+
     return new UserInformationDto(userInfo);
   }
 
@@ -71,7 +78,8 @@ export class UserInformationService {
     userInfo.firstName = firstName;
     userInfo.lastName = lastName;
 
-    await userInfo.save();
+    await this.userInformationRepository.save(userInfo);
+
     return new UserInformationDto(userInfo);
   }
 }

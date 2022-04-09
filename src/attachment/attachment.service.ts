@@ -1,15 +1,15 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import * as path from 'path';
 import * as fs from 'fs';
 import * as uuid from 'uuid';
 
-import { Attachment } from 'src/entities/attachment/attachment.entity';
-import { Repository } from 'typeorm';
-
 import { AttachmentTypes } from 'src/attachment/enums/attachment-types.enum';
 import { AttachmentFolderTypes } from 'src/attachment/enums/attachment-folder-types.enum';
+
+import { Attachment } from 'src/entities/attachment/attachment.entity';
 
 @Injectable()
 export class AttachmentService {
