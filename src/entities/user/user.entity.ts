@@ -3,6 +3,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -61,4 +63,12 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Album, album => album.author)
   uploadedAlbums: Album[];
+
+  @ManyToMany(() => Track, track => track.likedByUsers, { eager: true })
+  @JoinTable({
+    name: 'user_liked_tracks',
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'track_id', referencedColumnName: 'id' },
+  })
+  likedTracks: Track[];
 }
