@@ -15,6 +15,7 @@ import { RefreshToken } from 'src/entities/refresh-token/refresh-token.entity';
 import { UserInformation } from 'src/entities/user-information/user-information.entity';
 import { Track } from 'src/entities/track/track.entity';
 import { Comment } from 'src/entities/comment/comment.entity';
+import { Album } from 'src/entities/album/album.entity';
 
 @Unique(['email'])
 @Entity()
@@ -57,4 +58,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Comment, comment => comment.author, { eager: false })
   comments: Comment[];
+
+  @OneToMany(() => Album, album => album.author)
+  uploadedAlbums: Album[];
 }

@@ -13,6 +13,7 @@ import {
 import { User } from 'src/entities/user/user.entity';
 import { Attachment } from 'src/entities/attachment/attachment.entity';
 import { Comment } from 'src/entities/comment/comment.entity';
+import { Album } from 'src/entities/album/album.entity';
 
 @Entity()
 export class Track extends BaseEntity {
@@ -52,4 +53,11 @@ export class Track extends BaseEntity {
 
   @OneToMany(() => Comment, comment => comment.track, { eager: true })
   comments: Comment[];
+
+  @ManyToOne(() => Album, album => album.tracks, { nullable: true })
+  @JoinColumn({
+    name: 'album_id',
+    referencedColumnName: 'id',
+  })
+  album: Album;
 }
