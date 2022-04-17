@@ -10,7 +10,6 @@ import {
   Get,
   Param,
   UploadedFile,
-  NotImplementedException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -22,6 +21,7 @@ import { File } from 'src/attachment/file/file.type';
 
 import { CreateAlbumDto } from 'src/album/dto/create-album.dto';
 import { UpdateAlbumDto } from 'src/album/dto/update-album.dto';
+import { DeleteAlbumDto } from 'src/album/dto/delete-album.dto';
 import { AlbumDto } from 'src/album/dto/album.dto';
 import { AddTracksToAlbumDto } from 'src/album/dto/add-tracks-to-album.dto';
 
@@ -80,8 +80,10 @@ export class AlbumController {
 
   @Delete('/:albumId')
   @HttpCode(HttpStatus.OK)
-  async removeAlbum() {
-    // TODO: implement remove logic
-    return new NotImplementedException();
+  async removeAlbum(
+    @Body() deleteAlbumDto: DeleteAlbumDto,
+    @Param('albumId') albumId: string,
+  ): Promise<AlbumDto> {
+    return this.albumService.removeAlbum(deleteAlbumDto, albumId);
   }
 }

@@ -97,6 +97,8 @@ export class TrackService {
   async removeTrack(trackId: string): Promise<TrackDto> {
     const track = await this.trackRepository.findOneOrFail(trackId);
     await this.trackRepository.remove(track);
+    await this.attachmentService.removeFile(track.audio.id);
+    await this.attachmentService.removeFile(track.image.id);
     return new TrackDto(track);
   }
 

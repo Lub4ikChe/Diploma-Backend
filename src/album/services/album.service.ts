@@ -19,6 +19,7 @@ import { UserService } from 'src/user/services/user.service';
 
 import { CreateAlbumDto } from 'src/album/dto/create-album.dto';
 import { UpdateAlbumDto } from 'src/album/dto/update-album.dto';
+import { DeleteAlbumDto } from 'src/album/dto/delete-album.dto';
 import { AlbumDto } from 'src/album/dto/album.dto';
 import { AddTracksToAlbumDto } from 'src/album/dto/add-tracks-to-album.dto';
 
@@ -116,6 +117,27 @@ export class AlbumService {
 
     album.tracks = tracks;
     await this.albumRepository.save(album);
+    return new AlbumDto(album);
+  }
+
+  async removeAlbum(deleteAlbumDto: DeleteAlbumDto, albumId: string) {
+    const album = await this.albumRepository.findOneOrFail(albumId);
+    const { deleteWithTrack } = deleteAlbumDto;
+
+    for (let i = 0; i < album.tracks.length; i++) {
+      const track = album.tracks[i];
+      if (deleteWithTrack) {
+        await this.trackRepository.remove(track);
+        await this.attachmentService.removeFile(track.audio.id);
+        await this.attachmentService.removeFile(track.image.id);
+      } else {
+        track.album = null;
+        await this.trackRepository.save(track);
+      }
+    }
+
+    await this.albumRepository.remove(album);
+    await this.attachmentService.removeFile(album.image.id);
     return new AlbumDto(album);
   }
 }

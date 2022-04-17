@@ -42,7 +42,7 @@ export class Album extends BaseEntity {
 
   @AfterLoad()
   setSignedUrl() {
-    this.listensCount = this.tracks.reduce(
+    this.listensCount = (this.tracks || []).reduce(
       (previousValue, track) => previousValue + track.listensCount,
       0,
     );
