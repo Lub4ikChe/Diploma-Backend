@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -60,4 +61,7 @@ export class Track extends BaseEntity {
     referencedColumnName: 'id',
   })
   album: Album;
+
+  @ManyToMany(() => User, user => user.likedTracks)
+  likedByUsers: User[];
 }
