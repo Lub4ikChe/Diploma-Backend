@@ -62,6 +62,6 @@ export class Track extends BaseEntity {
   })
   album: Album;
 
-  @ManyToMany(() => User, user => user.likedTracks, { eager: false })
+  @ManyToMany(() => User, user => user.likedTracks)
   likedByUsers: User[];
 }

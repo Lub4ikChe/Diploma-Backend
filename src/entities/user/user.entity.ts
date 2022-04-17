@@ -64,7 +64,7 @@ export class User extends BaseEntity {
   @OneToMany(() => Album, album => album.author)
   uploadedAlbums: Album[];
 
-  @ManyToMany(() => Track, track => track.likedByUsers, { eager: true })
+  @ManyToMany(() => Track, track => track.likedByUsers)
   @JoinTable({
     name: 'user_liked_tracks',
     joinColumn: { name: 'user_id', referencedColumnName: 'id' },
