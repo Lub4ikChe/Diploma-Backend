@@ -8,6 +8,8 @@ import { AttachmentService } from 'src/attachment/attachment.service';
 import { AttachmentTypes } from 'src/attachment/enums/attachment-types.enum';
 import { AttachmentFolderTypes } from 'src/attachment/enums/attachment-folder-types.enum';
 
+import { File } from 'src/attachment/file/file.type';
+
 import { CreateTrackDto } from 'src/track/dto/create-track.dto';
 import { UpdateTrackDto } from 'src/track/dto/update-track.dto';
 import { TrackDto } from 'src/track/dto/track.dto';
@@ -44,8 +46,8 @@ export class TrackService {
   async createTrack(
     userEmail: string,
     createTrackDto: CreateTrackDto,
-    audioFile: Express.Multer.File,
-    imageFile: Express.Multer.File,
+    audioFile: File,
+    imageFile: File,
   ): Promise<TrackDto> {
     const user = await this.userService.getUserByEmail(userEmail);
     if (!user) {
@@ -95,6 +97,8 @@ export class TrackService {
   async removeTrack(trackId: string): Promise<TrackDto> {
     const track = await this.trackRepository.findOneOrFail(trackId);
     await this.trackRepository.remove(track);
+    await this.attachmentService.removeFile(track.audio.id);
+    await this.attachmentService.removeFile(track.image.id);
     return new TrackDto(track);
   }
 

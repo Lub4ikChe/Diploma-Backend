@@ -13,6 +13,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 import { UserPhotoService } from 'src/user/user-photo/user-photo.service';
 import { GetJWTPayload } from 'src/auth/decorators/get-jwt-payload.decorator';
+import { File } from 'src/attachment/file/file.type';
 
 import { JwtPayload } from 'src/auth/jwt/jwt-payload.interface';
 import { AttachmentDto } from 'src/attachment/dto/attachment.dto';
@@ -26,7 +27,7 @@ export class UserPhotoController {
   @UseInterceptors(FileInterceptor('photo', { limits: { fileSize: 800000 } }))
   async createUserPhoto(
     @GetJWTPayload() jwtPayload: JwtPayload,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: File,
   ): Promise<AttachmentDto> {
     if (!file) {
       throw new BadRequestException('Photo not uploaded');
@@ -40,7 +41,7 @@ export class UserPhotoController {
   @UseInterceptors(FileInterceptor('photo', { limits: { fileSize: 800000 } }))
   async updateUserPhoto(
     @GetJWTPayload() jwtPayload: JwtPayload,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: File,
   ): Promise<AttachmentDto> {
     if (!file) {
       throw new BadRequestException('Photo not uploaded');

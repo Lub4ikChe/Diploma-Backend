@@ -14,6 +14,7 @@ import { UserModule } from 'src/user/user.module';
 import { AttachmentModule } from 'src/attachment/attachment.module';
 import { TrackModule } from 'src/track/track.module';
 import { CommentModule } from 'src/comment/comment.module';
+import { AlbumModule } from 'src/album/album.module';
 
 import { AppService } from 'src/app.service';
 import { AppController } from 'src/app.controller';
@@ -54,6 +55,7 @@ import { AppController } from 'src/app.controller';
     AttachmentModule,
     TrackModule,
     CommentModule,
+    AlbumModule,
   ],
   controllers: [AppController],
   providers: [AppService],

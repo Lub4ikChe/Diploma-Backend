@@ -9,6 +9,8 @@ import { AttachmentService } from 'src/attachment/attachment.service';
 import { AttachmentTypes } from 'src/attachment/enums/attachment-types.enum';
 import { AttachmentFolderTypes } from 'src/attachment/enums/attachment-folder-types.enum';
 
+import { File } from 'src/attachment/file/file.type';
+
 import { AttachmentDto } from 'src/attachment/dto/attachment.dto';
 
 @Injectable()
@@ -19,10 +21,7 @@ export class UserPhotoService {
     private userInformationRepository: Repository<UserInformation>,
   ) {}
 
-  async createUserPhoto(
-    userId: string,
-    file: Express.Multer.File,
-  ): Promise<AttachmentDto> {
+  async createUserPhoto(userId: string, file: File): Promise<AttachmentDto> {
     const userInfo = await this.findUserInfo(userId);
     if (userInfo.photo) {
       throw new ConflictException('Photo already exists');
@@ -37,10 +36,7 @@ export class UserPhotoService {
     return new AttachmentDto(attachment);
   }
 
-  async updateUserPhoto(
-    userId: string,
-    file: Express.Multer.File,
-  ): Promise<AttachmentDto> {
+  async updateUserPhoto(userId: string, file: File): Promise<AttachmentDto> {
     const userInfo = await this.findUserInfo(userId);
     if (!userInfo.photo) {
       return this.createUserPhoto(userId, file);
