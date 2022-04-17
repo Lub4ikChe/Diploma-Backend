@@ -124,8 +124,7 @@ export class AlbumService {
     const album = await this.albumRepository.findOneOrFail(albumId);
     const { deleteWithTrack } = deleteAlbumDto;
 
-    for (let i = 0; i < album.tracks.length; i++) {
-      const track = album.tracks[i];
+    for (const track of album.tracks) {
       if (deleteWithTrack) {
         await this.trackRepository.remove(track);
         await this.attachmentService.removeFile(track.audio.id);
