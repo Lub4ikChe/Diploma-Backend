@@ -1,4 +1,5 @@
 import {
+  AfterLoad,
   BaseEntity,
   Column,
   Entity,
@@ -15,6 +16,8 @@ import { Track } from 'src/entities/track/track.entity';
 
 @Entity()
 export class Album extends BaseEntity {
+  listensCount = 0;
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -36,4 +39,12 @@ export class Album extends BaseEntity {
 
   @OneToMany(() => Track, track => track.album, { eager: true })
   tracks: Track[];
+
+  @AfterLoad()
+  setSignedUrl() {
+    this.listensCount = this.tracks.reduce(
+      (previousValue, track) => previousValue + track.listensCount,
+      0,
+    );
+  }
 }

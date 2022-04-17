@@ -6,6 +6,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as uuid from 'uuid';
 
+import { File } from 'src/attachment/file/file.type';
+
 import { AttachmentTypes } from 'src/attachment/enums/attachment-types.enum';
 import { AttachmentFolderTypes } from 'src/attachment/enums/attachment-folder-types.enum';
 
@@ -19,7 +21,7 @@ export class AttachmentService {
   ) {}
 
   async createFile(
-    file: Express.Multer.File,
+    file: File,
     folderType: AttachmentFolderTypes,
     type: AttachmentTypes,
   ) {
@@ -54,7 +56,7 @@ export class AttachmentService {
     }
   }
 
-  async updateFile(attachmentId: string, file: Express.Multer.File) {
+  async updateFile(attachmentId: string, file: File) {
     try {
       const attachment = await this.getAttachmentById(attachmentId);
       const { name, folderType, type } = attachment;
@@ -78,7 +80,7 @@ export class AttachmentService {
   }
 
   private createFileOnServer(
-    file: Express.Multer.File,
+    file: File,
     filePath: string,
     fileName: string,
   ): void {

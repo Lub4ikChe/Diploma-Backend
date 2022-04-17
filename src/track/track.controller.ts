@@ -14,7 +14,9 @@ import {
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 import { TrackService } from 'src/track/services/track.service';
+
 import { GetJWTPayload } from 'src/auth/decorators/get-jwt-payload.decorator';
+import { File } from 'src/attachment/file/file.type';
 
 import { JwtPayload } from 'src/auth/jwt/jwt-payload.interface';
 
@@ -23,8 +25,8 @@ import { UpdateTrackDto } from 'src/track/dto/update-track.dto';
 import { TrackDto } from 'src/track/dto/track.dto';
 
 interface CreateTrackFiles {
-  audio: Express.Multer.File[];
-  image: Express.Multer.File[];
+  audio: File[];
+  image: File[];
 }
 
 @Controller('track')
