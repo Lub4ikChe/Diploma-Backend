@@ -13,6 +13,7 @@ import { File } from 'src/attachment/file/file.type';
 import { CreateTrackDto } from 'src/track/dto/create-track.dto';
 import { UpdateTrackDto } from 'src/track/dto/update-track.dto';
 import { TrackDto } from 'src/track/dto/track.dto';
+import { GetTrackDto } from 'src/track/dto/get-track.dto';
 
 import { Track } from 'src/entities/track/track.entity';
 
@@ -41,6 +42,39 @@ export class TrackService {
     }
 
     return new TrackDto(track);
+  }
+
+  async getTracks(getTrackDto: GetTrackDto): Promise<[TrackDto[], number]> {
+    const { search, page = 0, limit = 10 } = getTrackDto;
+
+    const query = this.trackRepository
+      .createQueryBuilder('track')
+      .leftJoinAndSelect('track.uploadedBy', 'uploadedBy')
+      .leftJoinAndSelect('uploadedBy.information', 'uploadedByInformation')
+      .leftJoinAndSelect('track.audio', 'audio')
+      .leftJoinAndSelect('track.image', 'image')
+      .leftJoinAndSelect('track.album', 'album');
+
+    if (search) {
+      query.andWhere(
+        '' +
+          ' track.name ILIKE :search OR' +
+          ' uploadedByInformation.firstName ILIKE :search OR' +
+          ' uploadedByInformation.lastName ILIKE :search OR' +
+          ' album.name ILIKE :search',
+        {
+          search: `%${search}%`,
+        },
+      );
+    }
+
+    if (page >= 0 && limit) {
+      query.skip(page * limit).take(limit);
+    }
+
+    const [tracks, total] = await query.getManyAndCount();
+
+    return [tracks.map(track => new TrackDto(track)), total];
   }
 
   async createTrack(

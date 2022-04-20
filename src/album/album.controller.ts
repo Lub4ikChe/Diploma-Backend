@@ -10,11 +10,14 @@ import {
   Get,
   Param,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { AlbumService } from 'src/album/services/album.service';
+
 import { GetJWTPayload } from 'src/auth/decorators/get-jwt-payload.decorator';
+import { SkipAuth } from 'src/auth/decorators/skip-auth.decorator';
 
 import { JwtPayload } from 'src/auth/jwt/jwt-payload.interface';
 import { File } from 'src/attachment/file/file.type';
@@ -24,6 +27,7 @@ import { UpdateAlbumDto } from 'src/album/dto/update-album.dto';
 import { DeleteAlbumDto } from 'src/album/dto/delete-album.dto';
 import { AlbumDto } from 'src/album/dto/album.dto';
 import { AddTracksToAlbumDto } from 'src/album/dto/add-tracks-to-album.dto';
+import { GetAlbumDto } from 'src/album/dto/get-album.dto';
 
 @Controller('album')
 export class AlbumController {
@@ -31,8 +35,17 @@ export class AlbumController {
 
   @Get('/:albumId')
   @HttpCode(HttpStatus.OK)
-  async getAlbums(@Param('albumId') albumId: string): Promise<AlbumDto> {
+  async getAlbum(@Param('albumId') albumId: string): Promise<AlbumDto> {
     return this.albumService.getAlbum(albumId);
+  }
+
+  @SkipAuth()
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  async getAlbums(
+    @Query() getAlbumDto: GetAlbumDto,
+  ): Promise<[AlbumDto[], number]> {
+    return this.albumService.getAlbums(getAlbumDto);
   }
 
   @Post()

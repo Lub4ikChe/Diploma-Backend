@@ -22,6 +22,7 @@ import { UpdateAlbumDto } from 'src/album/dto/update-album.dto';
 import { DeleteAlbumDto } from 'src/album/dto/delete-album.dto';
 import { AlbumDto } from 'src/album/dto/album.dto';
 import { AddTracksToAlbumDto } from 'src/album/dto/add-tracks-to-album.dto';
+import { GetAlbumDto } from 'src/album/dto/get-album.dto';
 
 @Injectable()
 export class AlbumService {
@@ -34,13 +35,44 @@ export class AlbumService {
     private attachmentService: AttachmentService,
   ) {}
 
-  async getAlbum(albumId: string) {
+  async getAlbum(albumId: string): Promise<AlbumDto> {
     const album = await this.albumRepository.findOne(albumId);
     if (!album) {
       throw new NotFoundException('Album not found');
     }
 
     return new AlbumDto(album);
+  }
+
+  async getAlbums(getAlbumDto: GetAlbumDto): Promise<[AlbumDto[], number]> {
+    const { search, page = 0, limit = 10 } = getAlbumDto;
+
+    const query = this.albumRepository
+      .createQueryBuilder('album')
+      .leftJoinAndSelect('album.author', 'author')
+      .leftJoinAndSelect('author.information', 'authorInformation')
+      .leftJoinAndSelect('album.tracks', 'tracks')
+      .leftJoinAndSelect('album.image', 'image');
+
+    if (search) {
+      query.andWhere(
+        '' +
+          ' album.name ILIKE :search OR' +
+          ' authorInformation.firstName ILIKE :search OR' +
+          ' authorInformation.lastName ILIKE :search',
+        {
+          search: `%${search}%`,
+        },
+      );
+    }
+
+    if (page >= 0 && limit) {
+      query.skip(page * limit).take(limit);
+    }
+
+    const [albums, total] = await query.getManyAndCount();
+
+    return [albums.map(album => new AlbumDto(album)), total];
   }
 
   async createAlbum(

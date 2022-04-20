@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { UserInviteService } from 'src/user/services/user-invite.service';
@@ -10,6 +14,9 @@ import { UserStatus } from 'src/user/enums/user-status.enum';
 
 import { SignUpDto } from 'src/auth/dto/sign-up.dto';
 import { SignInDto } from 'src/auth/dto/sign-in.dto';
+import { UserWithLatestMediaDto } from 'src/user/dto/user-with-latest-media.dto';
+import { UserDto } from 'src/user/dto/user.dto';
+import { GetUserDto } from 'src/user/dto/get-user.dto';
 
 @Injectable()
 export class UserService {
@@ -34,6 +41,50 @@ export class UserService {
       { email },
       { select: ['id', 'email', 'status'], relations: ['information'] },
     );
+  }
+
+  async getUserById(id: string): Promise<UserWithLatestMediaDto> {
+    const user = await this.userRepository.findOne(
+      { id },
+      {
+        select: ['id', 'email', 'status'],
+        relations: ['information', 'uploadedTracks', 'uploadedAlbums'],
+      },
+    );
+
+    if (!user) {
+      throw new NotFoundException('User is not found');
+    }
+
+    return new UserWithLatestMediaDto(user);
+  }
+
+  async getUsers(getUserDto: GetUserDto): Promise<[UserDto[], number]> {
+    const { search, page = 0, limit = 10 } = getUserDto;
+
+    const query = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.information', 'userInformation')
+      .leftJoin('user.uploadedTracks', 'userUploadedTracks');
+
+    if (search) {
+      query.andWhere(
+        '' +
+          ' userInformation.firstName ILIKE :search OR' +
+          ' userInformation.lastName ILIKE :search',
+        {
+          search: `%${search}%`,
+        },
+      );
+    }
+
+    if (page >= 0 && limit) {
+      query.skip(page * limit).take(limit);
+    }
+
+    const [users, total] = await query.getManyAndCount();
+
+    return [users.map(user => new UserDto(user)), total];
   }
 
   async validateUser(signInDto: SignInDto): Promise<User> {
