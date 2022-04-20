@@ -4,6 +4,7 @@ import { BaseDto } from 'src/utils/base.dto';
 import { AttachmentDto } from 'src/attachment/dto/attachment.dto';
 import { UserDto } from 'src/user/dto/user.dto';
 import { CommentDto } from 'src/comment/dto/comment.dto';
+import { AlbumDto } from 'src/album/dto/album.dto';
 
 import { Comment } from 'src/entities/comment/comment.entity';
 import { Track } from 'src/entities/track/track.entity';
@@ -46,4 +47,8 @@ export class TrackDto extends BaseDto<Track> {
       ),
   )
   comments: CommentDto[];
+
+  @Expose()
+  @Transform(prop => prop.value && new AlbumDto(prop.value))
+  album: AlbumDto;
 }

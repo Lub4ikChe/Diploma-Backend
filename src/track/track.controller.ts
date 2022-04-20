@@ -10,12 +10,15 @@ import {
   Body,
   Get,
   Param,
+  Query,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 import { TrackService } from 'src/track/services/track.service';
 
 import { GetJWTPayload } from 'src/auth/decorators/get-jwt-payload.decorator';
+import { SkipAuth } from 'src/auth/decorators/skip-auth.decorator';
+
 import { File } from 'src/attachment/file/file.type';
 
 import { JwtPayload } from 'src/auth/jwt/jwt-payload.interface';
@@ -23,6 +26,7 @@ import { JwtPayload } from 'src/auth/jwt/jwt-payload.interface';
 import { CreateTrackDto } from 'src/track/dto/create-track.dto';
 import { UpdateTrackDto } from 'src/track/dto/update-track.dto';
 import { TrackDto } from 'src/track/dto/track.dto';
+import { GetTrackDto } from 'src/track/dto/get-track.dto';
 
 interface CreateTrackFiles {
   audio: File[];
@@ -37,6 +41,15 @@ export class TrackController {
   @HttpCode(HttpStatus.OK)
   async getTrack(@Param('trackId') trackId: string): Promise<TrackDto> {
     return this.trackService.getTrack(trackId);
+  }
+
+  @SkipAuth()
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  async getTracks(
+    @Query() getTrackDto: GetTrackDto,
+  ): Promise<[TrackDto[], number]> {
+    return this.trackService.getTracks(getTrackDto);
   }
 
   @Post()
