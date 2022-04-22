@@ -14,6 +14,7 @@ import { UserStatus } from 'src/user/enums/user-status.enum';
 
 import { UserInvite } from 'src/entities/user/user-invite.entity';
 import { RefreshToken } from 'src/entities/refresh-token/refresh-token.entity';
+import { ResetPassword } from 'src/entities/user/reset-password.entity';
 import { UserInformation } from 'src/entities/user-information/user-information.entity';
 import { Track } from 'src/entities/track/track.entity';
 import { Comment } from 'src/entities/comment/comment.entity';
@@ -48,6 +49,12 @@ export class User extends BaseEntity {
   })
   @JoinColumn([{ name: 'user_refresh_token_id', referencedColumnName: 'id' }])
   refreshToken: RefreshToken;
+
+  @OneToMany(() => ResetPassword, resetPassword => resetPassword.user, {
+    cascade: true,
+    eager: false,
+  })
+  resetPasswords: ResetPassword;
 
   @OneToOne(() => UserInformation, userInformation => userInformation.user, {
     eager: false,
