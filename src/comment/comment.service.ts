@@ -24,6 +24,7 @@ export class CommentService {
     const comment = this.commentRepository.create({ ...createCommentDto });
     comment.author = author;
     comment.track = track;
+    comment.commented = new Date();
 
     return this.commentRepository.save(comment);
   }
@@ -42,6 +43,7 @@ export class CommentService {
 
     const { text } = updateCommentDto;
     comment.text = text;
+    comment.commented = new Date();
     return this.commentRepository.save(comment);
   }
 

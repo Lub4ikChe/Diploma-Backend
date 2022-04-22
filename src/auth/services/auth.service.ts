@@ -8,6 +8,7 @@ import {
 import { UserService } from 'src/user/services/user.service';
 import { UserInviteService } from 'src/user/services/user-invite.service';
 import { AuthTokenService } from 'src/auth/services/auth.token.service';
+import { EmailService } from 'src/email/email.service';
 
 import { SignUpDto } from 'src/auth/dto/sign-up.dto';
 import { SignInDto } from 'src/auth/dto/sign-in.dto';
@@ -23,6 +24,7 @@ export class AuthService {
     private userService: UserService,
     private userInviteService: UserInviteService,
     private authTokenService: AuthTokenService,
+    private emailService: EmailService,
   ) {}
 
   async signUp(signUpDto: SignUpDto): Promise<Tokens> {
@@ -38,7 +40,7 @@ export class AuthService {
     );
 
     try {
-      await this.userInviteService.sendConfirmEmail({
+      await this.emailService.sendConfirmEmail({
         to: email,
         inviteToken: user.invite.token,
       });

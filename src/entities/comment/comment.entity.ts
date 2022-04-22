@@ -18,6 +18,9 @@ export class Comment extends BaseEntity {
   @Column()
   text: string;
 
+  @Column({ name: 'commented_at' })
+  commented: Date;
+
   @ManyToOne(() => User, user => user.comments, {
     eager: true,
   })

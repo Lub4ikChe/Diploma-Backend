@@ -14,10 +14,7 @@ export class CommentDto extends BaseDto<Comment> {
   text: string;
 
   @Expose()
-  listensCount: number;
-
-  @Expose()
-  uploadedAt: Date;
+  commentedAt: Date;
 
   @Expose()
   @Transform(prop => prop.value && new UserDto(prop.value))

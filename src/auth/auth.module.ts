@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
 import { UserModule } from 'src/user/user.module';
+import { EmailModule } from 'src/email/email.module';
 
 import { AtJwtStrategy } from 'src/auth/jwt/at-jwt.strategy';
 import { RtJwtStrategy } from 'src/auth/jwt/rt-jwt.strategy';
@@ -22,6 +23,7 @@ import { UserRepository } from 'src/user/repositories/user.repository';
     PassportModule,
     JwtModule.register({}),
     UserModule,
+    EmailModule,
   ],
   providers: [AtJwtStrategy, RtJwtStrategy, AuthService, AuthTokenService],
   controllers: [AuthController],
