@@ -62,7 +62,7 @@ export class AuthController {
   }
 
   @SkipAuth()
-  @Post('/refresh')
+  @Get('/refresh')
   @UseGuards(RtGuard)
   @HttpCode(HttpStatus.OK)
   async refreshTokens(

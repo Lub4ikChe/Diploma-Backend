@@ -36,7 +36,9 @@ export class AlbumService {
   ) {}
 
   async getAlbum(albumId: string): Promise<AlbumDto> {
-    const album = await this.albumRepository.findOne(albumId);
+    const album = await this.albumRepository.findOne(albumId, {
+      relations: ['author', 'author.information'],
+    });
     if (!album) {
       throw new NotFoundException('Album not found');
     }
@@ -52,6 +54,8 @@ export class AlbumService {
       .leftJoinAndSelect('album.author', 'author')
       .leftJoinAndSelect('author.information', 'authorInformation')
       .leftJoinAndSelect('album.tracks', 'tracks')
+      .leftJoinAndSelect('tracks.uploadedBy', 'tracksUploadedBy')
+      .leftJoinAndSelect('tracksUploadedBy.information', 'tracksUploadedByInfo')
       .leftJoinAndSelect('album.image', 'image');
 
     if (search) {
