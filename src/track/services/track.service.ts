@@ -31,6 +31,8 @@ export class TrackService {
       { id: trackId },
       {
         relations: [
+          'uploadedBy',
+          'uploadedBy.information',
           'comments',
           'comments.author',
           'comments.author.information',
@@ -53,7 +55,9 @@ export class TrackService {
       .leftJoinAndSelect('uploadedBy.information', 'uploadedByInformation')
       .leftJoinAndSelect('track.audio', 'audio')
       .leftJoinAndSelect('track.image', 'image')
-      .leftJoinAndSelect('track.album', 'album');
+      .leftJoinAndSelect('track.album', 'album')
+      .leftJoinAndSelect('track.comments', 'comments')
+      .leftJoinAndSelect('comments.author', 'commentsAuthor');
 
     if (search) {
       query.andWhere(

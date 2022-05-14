@@ -8,14 +8,19 @@ import { Track } from 'src/entities/track/track.entity';
 import { Album } from 'src/entities/album/album.entity';
 
 @Exclude()
-export class UserWithLatestMediaDto extends UserDto {
+export class UserWithMediaDto extends UserDto {
+  @Expose()
+  @Transform(
+    prop => prop.value && prop.value.map((track: Track) => new TrackDto(track)),
+  )
+  likedTracks: TrackDto[];
+
   @Expose()
   @Transform(
     prop =>
       prop.value &&
       prop.value
         .map((track: Track) => new TrackDto(track))
-        .slice(0, 5)
         .sort(
           (a: Track, b: Track) =>
             b.uploadedAt.getTime() - a.uploadedAt.getTime(),
@@ -25,9 +30,7 @@ export class UserWithLatestMediaDto extends UserDto {
 
   @Expose()
   @Transform(
-    prop =>
-      prop.value &&
-      prop.value.map((album: Album) => new AlbumDto(album)).slice(0, 5),
+    prop => prop.value && prop.value.map((album: Album) => new AlbumDto(album)),
   )
   uploadedAlbums: AlbumDto[];
 }

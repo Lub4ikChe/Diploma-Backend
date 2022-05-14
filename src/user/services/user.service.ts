@@ -15,6 +15,7 @@ import { UserStatus } from 'src/user/enums/user-status.enum';
 import { SignUpDto } from 'src/auth/dto/sign-up.dto';
 import { SignInDto } from 'src/auth/dto/sign-in.dto';
 import { UserWithLatestMediaDto } from 'src/user/dto/user-with-latest-media.dto';
+import { UserWithMediaDto } from 'src/user/dto/user-with-media.dto';
 import { UserDto } from 'src/user/dto/user.dto';
 import { GetUserDto } from 'src/user/dto/get-user.dto';
 
@@ -48,7 +49,15 @@ export class UserService {
       { id },
       {
         select: ['id', 'email', 'status'],
-        relations: ['information', 'uploadedTracks', 'uploadedAlbums'],
+        relations: [
+          'information',
+          'uploadedTracks',
+          'uploadedTracks.uploadedBy',
+          'uploadedTracks.uploadedBy.information',
+          'uploadedAlbums',
+          'uploadedAlbums.author',
+          'uploadedAlbums.author.information',
+        ],
       },
     );
 
@@ -59,12 +68,40 @@ export class UserService {
     return new UserWithLatestMediaDto(user);
   }
 
+  async getMeUserWithMedia(id: string): Promise<UserWithMediaDto> {
+    const user = await this.userRepository.findOne(
+      { id },
+      {
+        select: ['id', 'email', 'status'],
+        relations: [
+          'information',
+          'likedTracks',
+          'likedTracks.uploadedBy',
+          'likedTracks.uploadedBy.information',
+          'uploadedTracks',
+          'uploadedTracks.uploadedBy',
+          'uploadedTracks.uploadedBy.information',
+          'uploadedAlbums',
+          'uploadedAlbums.author',
+          'uploadedAlbums.author.information',
+        ],
+      },
+    );
+
+    if (!user) {
+      throw new NotFoundException('User is not found');
+    }
+
+    return new UserWithMediaDto(user);
+  }
+
   async getUsers(getUserDto: GetUserDto): Promise<[UserDto[], number]> {
     const { search, page = 0, limit = 10 } = getUserDto;
 
     const query = this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.information', 'userInformation')
+      .leftJoinAndSelect('userInformation.photo', 'userInformationPhoto')
       .leftJoin('user.uploadedTracks', 'userUploadedTracks');
 
     if (search) {

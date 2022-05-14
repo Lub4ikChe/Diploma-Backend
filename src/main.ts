@@ -26,6 +26,12 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  // cors
+  app.enableCors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  });
+
   // handling requests
   app.useGlobalPipes(
     new ValidationPipe({

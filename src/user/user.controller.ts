@@ -16,6 +16,7 @@ import { JwtPayload } from 'src/auth/jwt/jwt-payload.interface';
 
 import { UserDto } from 'src/user/dto/user.dto';
 import { UserWithLatestMediaDto } from 'src/user/dto/user-with-latest-media.dto';
+import { UserWithMediaDto } from 'src/user/dto/user-with-media.dto';
 import { GetUserDto } from 'src/user/dto/get-user.dto';
 
 @Controller('user')
@@ -26,8 +27,8 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async getMe(
     @GetJWTPayload() jwtPayload: JwtPayload,
-  ): Promise<UserWithLatestMediaDto> {
-    return this.userService.getUserById(jwtPayload.userId);
+  ): Promise<UserWithMediaDto> {
+    return this.userService.getMeUserWithMedia(jwtPayload.userId);
   }
 
   @SkipAuth()

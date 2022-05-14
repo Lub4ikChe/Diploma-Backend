@@ -16,9 +16,6 @@ export class UserDto extends BaseDto<User> {
   status: string;
 
   @Expose()
-  name: string;
-
-  @Expose()
   @Transform(prop => prop.value && new UserInformationDto(prop.value))
   information: UserInformationDto;
 }
