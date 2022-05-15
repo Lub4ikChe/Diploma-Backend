@@ -118,7 +118,18 @@ export class TrackService {
     trackId: string,
     updateTrackDto: UpdateTrackDto,
   ): Promise<TrackDto> {
-    const track = await this.trackRepository.findOne({ id: trackId });
+    const track = await this.trackRepository.findOne(
+      { id: trackId },
+      {
+        relations: [
+          'uploadedBy',
+          'uploadedBy.information',
+          'comments',
+          'comments.author',
+          'comments.author.information',
+        ],
+      },
+    );
 
     if (!track) {
       throw new NotFoundException();
