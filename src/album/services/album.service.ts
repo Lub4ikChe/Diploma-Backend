@@ -115,6 +115,7 @@ export class AlbumService {
         id: albumId,
         author: userId,
       },
+      relations: ['author', 'author.information'],
     });
 
     if (!album) {
