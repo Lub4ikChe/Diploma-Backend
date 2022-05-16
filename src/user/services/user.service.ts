@@ -79,6 +79,7 @@ export class UserService {
           'likedTracks.uploadedBy',
           'likedTracks.uploadedBy.information',
           'uploadedTracks',
+          'uploadedTracks.album',
           'uploadedTracks.uploadedBy',
           'uploadedTracks.uploadedBy.information',
           'uploadedAlbums',
