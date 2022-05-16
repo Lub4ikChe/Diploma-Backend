@@ -41,12 +41,15 @@ export class AuthController {
     return tokens;
   }
 
+  @SkipAuth()
   @Get('/activate/:inviteToken')
   @HttpCode(HttpStatus.OK)
   async activateUserAccount(
     @Param('inviteToken') inviteToken: string,
+    @Res() response: Response,
   ): Promise<void> {
-    return this.authService.activateUserAccount(inviteToken);
+    this.authService.activateUserAccount(inviteToken);
+    return response.redirect(`${process.env.CLIENT_URL}/complete-registration`);
   }
 
   @SkipAuth()

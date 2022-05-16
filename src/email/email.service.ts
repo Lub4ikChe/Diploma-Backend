@@ -25,7 +25,7 @@ export class EmailService {
   async sendConfirmEmail(data: SendConfirmEmailProps): Promise<void> {
     const { to, inviteToken } = data;
     // MAYBE: change it to client url
-    const link = `${process.env.SERVER_URL}/activate/${inviteToken}`;
+    const link = `${process.env.SERVER_URL}/auth/activate/${inviteToken}`;
     return this.mailerService.sendMail({
       to,
       from: process.env.DEFAULT_SENDER,
