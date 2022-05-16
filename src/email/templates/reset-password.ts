@@ -6,7 +6,7 @@ export const resetPasswordEmail = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 
   <meta name="x-apple-disable-message-reformatting"> 
   <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
   <meta content="telephone=no" name="format-detection"> 
-  <title>Confirm registration</title> 
+  <title>Reset password</title> 
   <style type="text/css">
 #outlook a {
 	padding:0;
@@ -101,7 +101,7 @@ a[x-apple-data-detectors] {
                        </table></td> 
                      </tr> 
                      <tr> 
-                      <td align="left" class="es-m-txt-l" style="padding:0;Margin:0"><span class="es-button-border" style="border-style:solid;border-color:#2cb543;background:#02c8fe;border-width:0px;display:inline-block;border-radius:6px;width:auto"><a href={{ link }} class="es-button es-button-1" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:18px;border-style:solid;border-color:#02c8fe;border-width:15px 50px;display:inline-block;background:#02c8fe;border-radius:6px;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center">Confirm registration</a></span></td> 
+                      <td align="left" class="es-m-txt-l" style="padding:0;Margin:0"><span class="es-button-border" style="border-style:solid;border-color:#2cb543;background:#02c8fe;border-width:0px;display:inline-block;border-radius:6px;width:auto"><a href={{ link }} class="es-button es-button-1" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:18px;border-style:solid;border-color:#02c8fe;border-width:15px 50px;display:inline-block;background:#02c8fe;border-radius:6px;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center">Reset password</a></span></td> 
                      </tr> 
                      <tr> 
                       <td align="center" style="padding:5px;Margin:0;font-size:0"> 
