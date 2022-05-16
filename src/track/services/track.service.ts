@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { UserService } from 'src/user/services/user.service';
 import { AttachmentService } from 'src/attachment/attachment.service';
+import { TrackCommentService } from 'src/track/track-comment/track-comment.service';
 
 import { AttachmentTypes } from 'src/attachment/enums/attachment-types.enum';
 import { AttachmentFolderTypes } from 'src/attachment/enums/attachment-folder-types.enum';
@@ -23,6 +24,7 @@ export class TrackService {
     @InjectRepository(Track)
     private trackRepository: Repository<Track>,
     private userService: UserService,
+    private trackCommentService: TrackCommentService,
     private attachmentService: AttachmentService,
   ) {}
 
@@ -145,6 +147,10 @@ export class TrackService {
 
   async removeTrack(trackId: string): Promise<TrackDto> {
     const track = await this.trackRepository.findOneOrFail(trackId);
+    for (const comment of track.comments) {
+      await this.trackCommentService.removeComment(track.id, comment.id);
+    }
+
     await this.trackRepository.remove(track);
     await this.attachmentService.removeFile(track.audio.id);
     await this.attachmentService.removeFile(track.image.id);
