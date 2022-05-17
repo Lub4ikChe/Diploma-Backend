@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { Response } from 'express';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -10,6 +16,7 @@ import { AttachmentTypes } from 'src/attachment/enums/attachment-types.enum';
 import { AttachmentFolderTypes } from 'src/attachment/enums/attachment-folder-types.enum';
 
 import { File } from 'src/attachment/file/file.type';
+import * as fs from 'fs';
 
 import { CreateTrackDto } from 'src/track/dto/create-track.dto';
 import { UpdateTrackDto } from 'src/track/dto/update-track.dto';
@@ -162,5 +169,21 @@ export class TrackService {
     track.listensCount += 1;
     await this.trackRepository.save(track);
     return new TrackDto(track);
+  }
+
+  async downloadTrack(trackId: string, response: Response): Promise<void> {
+    try {
+      const track = await this.trackRepository.findOneOrFail(trackId);
+      const fileData = await this.attachmentService.prepareDownloadFile(
+        track.audio.id,
+        AttachmentFolderTypes.TRACK,
+        AttachmentTypes.AUDIO,
+      );
+      if (fs.existsSync(fileData.path)) {
+        return response.download(fileData.path, fileData.name);
+      }
+    } catch {
+      throw new InternalServerErrorException();
+    }
   }
 }
