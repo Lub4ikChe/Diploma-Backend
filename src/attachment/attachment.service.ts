@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import * as uuid from 'uuid';
 
 import { File } from 'src/attachment/file/file.type';
+import { PrepareDownloadFile } from 'src/attachment/file/prepare-download.interface';
 
 import { AttachmentTypes } from 'src/attachment/enums/attachment-types.enum';
 import { AttachmentFolderTypes } from 'src/attachment/enums/attachment-folder-types.enum';
@@ -73,6 +74,23 @@ export class AttachmentService {
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
+  }
+
+  async prepareDownloadFile(
+    attachmentId: string,
+    folderType: AttachmentFolderTypes,
+    type: AttachmentTypes,
+  ): Promise<PrepareDownloadFile> {
+    const attachment = await this.getAttachmentById(attachmentId);
+    const filePath = path.resolve(
+      this.createFilePath(folderType, type),
+      attachment.name,
+    );
+
+    return {
+      path: filePath,
+      name: attachment.name,
+    };
   }
 
   private removeFileFromServer(filePath: string, fileName: string): void {

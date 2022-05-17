@@ -11,7 +11,10 @@ import {
   Get,
   Param,
   Query,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
+
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 import { TrackService } from 'src/track/services/track.service';
@@ -93,5 +96,14 @@ export class TrackController {
   @HttpCode(HttpStatus.OK)
   async listenTrack(@Param('trackId') trackId: string): Promise<TrackDto> {
     return this.trackService.listenTrack(trackId);
+  }
+
+  @Get('/:trackId/download')
+  @HttpCode(HttpStatus.OK)
+  async downloadTrack(
+    @Param('trackId') trackId: string,
+    @Res() response: Response,
+  ): Promise<void> {
+    return this.trackService.downloadTrack(trackId, response);
   }
 }
