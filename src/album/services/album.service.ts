@@ -16,6 +16,7 @@ import { File } from 'src/attachment/file/file.type';
 
 import { AttachmentService } from 'src/attachment/attachment.service';
 import { UserService } from 'src/user/services/user.service';
+import { TrackService } from 'src/track/services/track.service';
 
 import { CreateAlbumDto } from 'src/album/dto/create-album.dto';
 import { UpdateAlbumDto } from 'src/album/dto/update-album.dto';
@@ -33,6 +34,7 @@ export class AlbumService {
     private trackRepository: Repository<Track>,
     private userService: UserService,
     private attachmentService: AttachmentService,
+    private trackService: TrackService,
   ) {}
 
   async getAlbum(albumId: string): Promise<AlbumDto> {
@@ -83,6 +85,7 @@ export class AlbumService {
     createAlbumDto: CreateAlbumDto,
     userEmail: string,
     imageFile: File,
+    audios?: File[],
   ): Promise<AlbumDto> {
     const user = await this.userService.getUserByEmail(userEmail);
     if (!user) {
@@ -99,6 +102,27 @@ export class AlbumService {
         AttachmentTypes.PHOTO,
       );
       album.image = image;
+    }
+
+    if (audios) {
+      const trackIds: string[] = [];
+      for (let index = 0; index < audios.length; index++) {
+        const trackFile = audios[index];
+        const track = await this.trackService.createTrack(
+          userEmail,
+          {
+            name: `${createAlbumDto.name}-#${index + 1}`,
+            text: '',
+          },
+          trackFile,
+          imageFile,
+        );
+        trackIds.push(track.id);
+      }
+      const tracks = await this.trackRepository.find({
+        where: { id: In(trackIds) },
+      });
+      album.tracks = tracks;
     }
 
     await this.albumRepository.save(album);
