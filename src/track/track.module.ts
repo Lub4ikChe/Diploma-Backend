@@ -29,5 +29,6 @@ import { UserRepository } from 'src/user/repositories/user.repository';
     TrackCommentController,
     UserLikedTrackController,
   ],
+  exports: [TrackService],
 })
 export class TrackModule {}

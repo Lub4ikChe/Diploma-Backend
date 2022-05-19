@@ -9,10 +9,10 @@ import {
   Body,
   Get,
   Param,
-  UploadedFile,
+  UploadedFiles,
   Query,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 import { AlbumService } from 'src/album/services/album.service';
 
@@ -28,6 +28,11 @@ import { DeleteAlbumDto } from 'src/album/dto/delete-album.dto';
 import { AlbumDto } from 'src/album/dto/album.dto';
 import { AddTracksToAlbumDto } from 'src/album/dto/add-tracks-to-album.dto';
 import { GetAlbumDto } from 'src/album/dto/get-album.dto';
+
+interface CreateAlbumFiles {
+  image: File[];
+  audio: File[];
+}
 
 @Controller('album')
 export class AlbumController {
@@ -50,16 +55,23 @@ export class AlbumController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FileInterceptor('image', { limits: { fileSize: 800000 } }))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'image', maxCount: 1 },
+      { name: 'audio', maxCount: 15 },
+    ]),
+  )
   async createAlbum(
     @Body() createAlbumDto: CreateAlbumDto,
     @GetJWTPayload() jwtPayload: JwtPayload,
-    @UploadedFile() file: File,
+    @UploadedFiles() files: CreateAlbumFiles,
   ): Promise<AlbumDto> {
+    const { image, audio } = files;
     return this.albumService.createAlbum(
       createAlbumDto,
       jwtPayload.email,
-      file,
+      image[0],
+      audio,
     );
   }
 
